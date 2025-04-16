@@ -13,12 +13,13 @@ def valid_small_martix():
     ((valid_df["video_duration"] < 10000) & (valid_df["watch_ratio"] > 1)) |
     ((valid_df["video_duration"] > 10000) & (valid_df["video_duration"] < 20000) & (valid_df["watch_ratio"] > 0.7)) |
     ((valid_df["video_duration"] > 20000) & (valid_df["watch_ratio"] > 0.5))).astype(int)
-    print("少量数据测试模式")
-    valid_df = valid_df.sample(frac=0.005,random_state=40)
-    return valid_df
+    # print("少量数据测试模式")
+    # valid_df = valid_df.sample(frac=0.005,random_state=40)
+    valid_df.to_csv(get_path.valid_matrix)
+    
 
 def get_triple():
-    valid_df = valid_small_martix()
+    valid_df = pd.read_csv(get_path.valid_matrix)
     triple = pd.concat((valid_df["user_id"],valid_df["video_id"],valid_df["watch_ratio"]),axis=1,ignore_index=True)
     triple.to_csv(get_path.triple_path,index=False,header=["user_id","video_id","watch_ratio"])
 

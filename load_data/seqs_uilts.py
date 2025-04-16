@@ -1,7 +1,8 @@
 import numpy as np
 import load_data.get_path as get_path
-import load_data.process_utils as process_utils
 import json
+import pandas as pd
+
 
 def build_seqs(x,seqs):
     
@@ -21,7 +22,7 @@ def build_seqs(x,seqs):
     return user_seqs
 
 def get_seqs():
-    valid_df = process_utils.valid_small_martix()
+    valid_df = pd.read_csv(get_path.valid_matrix)
     sequence = []
     columns = ["timestamp","video_id","watch_ratio"]
     user_squence = valid_df.groupby("user_id")[columns].apply(lambda x: build_seqs(x,sequence)).to_dict()

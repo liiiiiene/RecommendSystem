@@ -8,6 +8,7 @@ user_comsum_path = "process_data/user_comsum.csv"
 item_feature_path = "process_data/item_feature.csv"
 user_feature_path = "process_data/user_feature.csv"
 video_title_path = "process_data/video_text.csv"
+valid_matrix = "process_data/valid_matrix.csv"
 BIG_MATRIX = 'data/big_matrix.csv'
 ITEM_CATEGORIES = 'data/item_categories.csv'
 ITEM_DAILY_FEATURES = 'data/item_daily_features.csv'
@@ -44,3 +45,8 @@ user_seq_ratio_path = "process_data/user_seq_ratio.npy"
 
 
 SaveBest_path = "./BEST_SAVE.csv"
+
+user_interact_prompt_path = "process_data/user_interact_prompt.json"
+
+recommend_dict_path = "model/System/recommend_dict.pkl"
+candidate_video_describe_path = "process_data/candidate_vedio_describe.json"

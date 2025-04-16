@@ -4,12 +4,14 @@ import load_data.bert_utils as gpt_embedding_process
 # from model.EmbeddingLayer.GptEmbedding import main as get_gpt_embedding
 import load_data.WideAndDeep_utils as model_process 
 import load_data.seqs_uilts as seqs_process
+import load_data.LLM_utils as llm_process
 import os
 
 if __name__=="__main__":
     os.makedirs("process_data",exist_ok=True)
     # 测试数据 pre_process.valid_small_martix()
     print("正在生成预处理数据")
+    pre_process.valid_small_martix()
     # 生成三元组(u,i,r) .csv文件
     pre_process.get_triple() # "process_data/triples.csv"
     # 生成item特征索引文件
@@ -46,3 +48,7 @@ if __name__=="__main__":
 
     print("正在生成组合模型需要的数据")
     model_process.build_user_seqs() # "process_data/user_seq_ratio.npy"
+
+    print("生成视频prompt")
+    llm_process.build_video_prompt()
+    llm_process.build_candidate_prompt()

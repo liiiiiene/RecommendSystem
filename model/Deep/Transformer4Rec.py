@@ -50,13 +50,13 @@ class Transformer4Rec(nn.Module):
         target_seqs_emb = self.item_emb(target_seqs)
         state = self.decoder.init_state(enc_seqs)
         out,state = self.decoder(target_seqs_emb,state)
-        return self.dense4seq(out)
+        return self.dense4seq(out),state
 
 
     def forward(self,history_sequnence,target_sequence,target_item):
         enc_seqs = self.encoder(self.item_emb(history_sequnence))
         Rec_logit = self.forward4Rec(enc_seqs,target_item)
-        Seq_out = self.forward4Seq(enc_seqs,target_sequence)
+        Seq_out,_ = self.forward4Seq(enc_seqs,target_sequence)
         return Rec_logit,Seq_out
     
     def compute_loss(self,logit,target_label,out,target_seq):
