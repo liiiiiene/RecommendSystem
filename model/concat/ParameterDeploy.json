@@ -1,0 +1,32 @@
+{
+    "num_epochs": [
+        100
+    ],
+    "lr": [
+        1e-4
+    ],
+    "batch_size": [
+        2048
+    ],
+    "weight_decay": [
+        1e-5,
+        1e-4
+    ],
+    "num_hidden": [
+        120
+    ],
+    "dropout": [
+        0.3,
+        0.5
+    ],
+    "patience": [
+        10
+    ],
+    "num_layer": [
+        4
+    ],
+    "num_head": [
+        12,
+        6
+    ]
+}

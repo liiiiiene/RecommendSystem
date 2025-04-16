@@ -1,0 +1,2 @@
+label,precision,recall,accuracy,loss,num_epochs,lr,batch_size,weight_decay,num_hidden,patience,num_head,num_layer,dropout
+WideAndDeep,0.7461398104972984,0.3026072502630692,0.603813791672152,4.475383038602824,100,0.0001,2048,0.0001,120,10,6,4,0.5
