@@ -76,7 +76,7 @@ def ParametersFind(label,parameter_deploy,train):
         save_Best(origin_path[0],origin_path[1],origin_path[2],label)
     else:
         mp.set_start_method('spawn', force=True)
-        num_gpu = 2
+        num_gpu = torch.cuda.device_count()
         task_per_gpu = [[] for _ in range(num_gpu)]
         for i,com in enumerate(all_combinations):
             task_per_gpu[i%num_gpu].append(com) # 分配不同gpu上执行的任务数
@@ -87,7 +87,7 @@ def ParametersFind(label,parameter_deploy,train):
         for gpu_id in range(num_gpu):
             p = mp.Process(
                 target=train_on_gpu,
-                args=(gpu_id+1, task_per_gpu[gpu_id], total_file_path[gpu_id], train)
+                args=(gpu_id, task_per_gpu[gpu_id], total_file_path[gpu_id], train)
             )
             p.start()
             processes.append(p)
