@@ -8,35 +8,19 @@ def get_seqs(x,video_text):
     x = x.sort_values(by="timestamp",axis=0)
     x = x[x["watch_ratio"]==1]
     x = x.iloc[-10:] if len(x)>=10 else x
-    video_id_list = []
-    single_prompt='"video_id" 代表有效观看的视频id。。"title" 代表此视频的标题。以下是按照观看时间排序的，视频历史有效观看序列：\n'
+    single_prompt=''
 
     for _,row in x.iterrows():
         try:
-            title = video_text[ video_text["video_id"]== row["video_id"].item() ]["caption"].values[0]
+            valid_text = video_text[ video_text["video_id"]== row["video_id"].item() ]
+            title = valid_text["caption"].values[0]
         except:
             continue
-        single_prompt += f"[video_id:{int(row['video_id'].item())},title:{title}]->"
-        video_id_list.append(int(row['video_id'].item()))
-
-
+        single_dict = f'''（"视频id":{valid_text["video_id"].values[0].item()},"封面文字":{valid_text["manual_cover_text"].values[0]},"简介标题":{title},"标题标签":{valid_text["topic_tag"].values[0]},"一级标签":{valid_text["first_level_category_name"].values[0]},"二级标签":{valid_text["second_level_category_name"].values[0]},"三级标签":{valid_text["third_level_category_name"].values[0]}）'''
+        single_prompt += str(single_dict) + "->"
+        
     single_prompt = single_prompt.rstrip("->")
-    single_prompt += "\n"
-
-    text_prompt = '关于这些历史有效观看视频的内容描述: \n'
-    valid_text = video_text[video_text["video_id"].isin(video_id_list) ]
-    for _,row in valid_text.iterrows():
-        single_video_dict = {
-            "视频id":row["video_id"],
-            "封面文字":row["manual_cover_text"],
-            "简介标题":row["caption"],
-            "标题标签":row["topic_tag"],
-            "一级标签":row["first_level_category_name"],
-            "二级标签":row["second_level_category_name"],
-            "三级标签":row["third_level_category_name"]
-        }
-        text_prompt += str(single_video_dict) + "\n"
-    return single_prompt + text_prompt
+    return single_prompt
 
 
 def build_video_prompt():
@@ -53,10 +37,10 @@ def build_video_prompt():
     json.dump(user_seqs,open(get_path.user_interact_prompt_path,"w+",encoding="utf-8"),indent=4)
 
 def add_id(x):
-    prompt = "{视频id:" + str(x.index[0]) + ","
+    prompt = "（视频id:" + str(x.index[0]) + ","
     prompt += re.sub(r"\n","",x.iloc[0]).replace("manual_cover_text:","封面文字:").replace("caption:","简介标题:").replace("topic_tag:","标题标签:").replace("first_level_category_name:","一级标签:").replace("second_level_category_name:","二级标签:").replace("third_level_category_name:","三级标签:")
     prompt = prompt.strip().rstrip(",")
-    prompt += "}"
+    prompt += "）"
     return prompt
 
 
@@ -74,5 +58,5 @@ def get_candidate_prompt():
 
 if __name__=="__main__":
     build_video_prompt()
-    # build_candidate_prompt()
+    build_candidate_prompt()
     

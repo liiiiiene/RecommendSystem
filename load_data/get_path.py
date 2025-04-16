@@ -50,3 +50,5 @@ user_interact_prompt_path = "process_data/user_interact_prompt.json"
 
 recommend_dict_path = "model/System/recommend_dict.pkl"
 candidate_video_describe_path = "process_data/candidate_vedio_describe.json"
+
+llm_recommend_dict_path = "model/System/llm_recommend_dict.json"
