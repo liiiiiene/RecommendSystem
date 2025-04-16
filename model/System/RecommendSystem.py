@@ -81,7 +81,7 @@ def build_recommend_dict(device):
             if len(recommend_item) ==0:
                 continue
             recommend_dict[u] |= recommend_item
-        pickle.dump(recommend_dict,open(get_path.recommend_dict_path,"wb"))
+            pickle.dump(recommend_dict,open(get_path.recommend_dict_path,"wb"))
 
 
 def get_llm_sequence_recommend():
