@@ -48,7 +48,7 @@ def get_llm_sequence_recommend():
     llm_recommend_dict = defaultdict(list)
     
     # 设置线程池最大工作线程数
-    max_workers = 15
+    max_workers = 10
     
     for u in tqdm(recommend_dict):
         if u not in prompt_user_dict.keys():
@@ -58,7 +58,7 @@ def get_llm_sequence_recommend():
         output = []
         
         # 准备参数列表
-        tasks = [(llm, sequence, v, candidate_dict) for v in candidate_video if v in candidate_video.keys()]
+        tasks = [(llm, sequence, v, candidate_dict) for v in candidate_video]
         
         # 使用多线程处理
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -71,3 +71,6 @@ def get_llm_sequence_recommend():
         llm_recommend_dict[u].append(output)
     
     json.dump(llm_recommend_dict, open(get_path.llm_recommend_dict_path, "w+", encoding="utf-8"), indent=4)
+
+if __name__=="__main__":
+    get_llm_sequence_recommend()
