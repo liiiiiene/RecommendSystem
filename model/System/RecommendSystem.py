@@ -12,10 +12,9 @@ class RecommendSystem:
         mask = logits > value
         return seqs[mask]
 
-    def predict(self,uid,history_seqs,decoder_begin_seqs,target_seqs,num_predict):
+    def predict(self,uid,history_seqs,target_seqs,num_predict):
         target_seqs = torch.LongTensor(target_seqs).to(self.device)
         history_seqs = torch.LongTensor(history_seqs).to(self.device)
-        decoder_begin_seqs = torch.LongTensor(decoder_begin_seqs).unsqueeze(dim=1).to(self.device)
         encoder_seqs = self.net.transformer.encoder(self.net.transformer.item_emb(history_seqs))
         decoder_out,decoder_state = self.net.transformer.forward4Seq(encoder_seqs,target_seqs)
         decoder_out = torch.argmax(decoder_out,dim=2).type(torch.int64)[:,-1]

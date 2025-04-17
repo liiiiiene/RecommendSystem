@@ -24,9 +24,8 @@ def build_recommend_dict_worker(worker_id, device, user_subset, result_queue):
             continue
         valid_seqs = seqs[seqs[:,-1]==1]
         history_seq = valid_seqs[:,:-2]
-        decoder_begin_item = valid_seqs[:,-2]
         target_seqs = valid_seqs[:,1:-1]
-        recommend_item = system.predict(eval(u), history_seq, decoder_begin_item, target_seqs, 3)
+        recommend_item = system.predict(eval(u), history_seq, target_seqs, 3)
         if len(recommend_item) == 0:
             continue
         recommend_dict[u] |= recommend_item
