@@ -95,6 +95,7 @@ def ParametersFind(label,parameter_deploy,train):
         # 等待所有进程完成
         for p in processes:
             p.join()
+            
         for i in range(num_gpu):
             get_most_best_model(*origin_path,**total_file_path[i],label=label)
         save_Best(origin_path[0],origin_path[1],origin_path[2],label)

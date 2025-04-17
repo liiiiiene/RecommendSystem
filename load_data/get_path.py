@@ -20,7 +20,7 @@ gpt_embeddings_path = "process_data/gpt_embeddings.csv"
 embedding_tensor = "process_data/gpt_emb.pt"
 baichuan_embddings_path = "process_data/buaichuan_embeddings.csv"
 sequence_item_ratio_path = "process_data/seq_item_rato.npy"
-uer_sequence_path = "process_data/user_seq.json"
+user_sequence_path = "process_data/user_seq.json"
 
 
 FMcross_net_path = "process_data/FM_cross_net.pt"
@@ -35,9 +35,9 @@ Transformer_BestPredict_path = "model/Train_Deep/BestPredict.json"
 Transformer_BestParameter_path = "model/Train_Deep/BestParameter.json"
 Transformer_ParameterDeploy_path = "model/Train_Deep/ParameterDeploy.json"
 
-WideAndDeep_BestPredict_path = "model/concat/BestPredict.json"
-WideAndDeep_BestParameter_path = "model/concat/BestParameter.json"
-WideAndDeep_ParameterDeploy_path = "model/concat/ParameterDeploy.json"
+WideAndDeep_BestPredict_path = "model/Train_WideAndDeep/BestPredict.json"
+WideAndDeep_BestParameter_path = "model/Train_WideAndDeep/BestParameter.json"
+WideAndDeep_ParameterDeploy_path = "model/Train_WideAndDeep/ParameterDeploy.json"
 
 system_Predict_path = "model/System/ctr_Predict.json"
 

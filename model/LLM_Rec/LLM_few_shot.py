@@ -49,24 +49,4 @@ class LLM_FewShot:
         return result
 
 
-# 使用示例
-if __name__ == "__main__":
-    prompt_prefix = """你是一个视频推荐系统。根据用户观看历史，预测用户点击新视频的概率。
-    """
-    prompt_suffix = """
-    历史序列: {sequeence}
-    候选视频: {candidate}
-
-    请根据上述历史序列，预测用户点击候选视频的概率。
-    返回一个0到1之间的浮点数，只返回数字，不要有任何解释。
-    """
-    
-    llm_few_shot = LLM_FewShot(prompt_prefix, prompt_suffix, ["sequeence", "candidate"])
-    
-    # 测试示例
-    user_history = "{'视频id': 10595, '封面文字': '印度军队再次非法越线'...}" # 这里放实际历史
-    candidate_video = "{视频id:7049, 封面文字:UNKNOWN...}" # 这里放候选视频
-    
-    prediction = llm_few_shot.FewShot(user_history, candidate_video)
-    print(f"预测点击率: {prediction.content}")
 
