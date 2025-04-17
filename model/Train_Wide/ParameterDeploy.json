@@ -1,22 +1,3 @@
-{
-    "num_epochs": [
-        100
-    ],
-    "lr": [
-        1e-4
-    ],
-    "batch_size": [
-        20480,
-        30720
-    ],
-    "weight_decay": [
-        1e-5,
-        1e-4
-    ],
-    "num_hidden": [
-        120
-    ],
-    "patience": [
-        10
-    ]
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:0e32d142d397372d5e7507f4ed531e3cdd4a6865f3ad8c734b8f074a3af197b7
+size 281

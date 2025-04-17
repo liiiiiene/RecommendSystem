@@ -39,8 +39,6 @@ WideAndDeep_BestPredict_path = "model/Train_WideAndDeep/BestPredict.json"
 WideAndDeep_BestParameter_path = "model/Train_WideAndDeep/BestParameter.json"
 WideAndDeep_ParameterDeploy_path = "model/Train_WideAndDeep/ParameterDeploy.json"
 
-system_Predict_path = "model/System/ctr_Predict.json"
-
 user_seq_ratio_path = "process_data/user_seq_ratio.npy"
 
 
@@ -48,7 +46,9 @@ SaveBest_path = "./BEST_SAVE.csv"
 
 user_interact_prompt_path = "process_data/user_interact_prompt.json"
 
-recommend_dict_path = "model/System/recommend_dict.pkl"
+recommend_dict_path = "model/System/recommend_dict/recommend_dict.pkl"
 candidate_video_describe_path = "process_data/candidate_vedio_describe.json"
 
-llm_recommend_dict_path = "model/System/llm_recommend_dict.json"
+llm_recommend_dict_path = "model/System/recommend_dict/llm_recommend_dict.json"
+
+explain_llm_recommend_dict_path = "model/System/recommend_dict/explain_llm_recommend_dict.json"

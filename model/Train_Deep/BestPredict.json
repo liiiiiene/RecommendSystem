@@ -1,8 +1,3 @@
-{
-    "transformer": {
-        "precision": 0.7328501521886887,
-        "recall": 0.38188623512493164,
-        "accuracy": 0.6255178561798964,
-        "loss": 4.503788535580314
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:71c16d34dfebc9275891045c2eadec9b8cb86f2232728921136d7bd3252a3f84
+size 184

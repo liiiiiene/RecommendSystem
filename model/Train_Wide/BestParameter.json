@@ -1,13 +1,3 @@
-{
-    "FMcross": {
-        "num_epochs": 100,
-        "lr": 0.0001,
-        "batch_size": 20480,
-        "weight_decay": 1e-05,
-        "num_hidden": 120,
-        "patience": 10,
-        "num_head": -1,
-        "num_layer": -1,
-        "dropout": -1
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:d0afe472cd52b65f6fa4c8810eeda6eef6d19a004fca67063a4f54aed1172fc4
+size 270

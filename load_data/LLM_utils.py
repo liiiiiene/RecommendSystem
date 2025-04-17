@@ -34,7 +34,7 @@ def build_video_prompt():
     small_martix = pd.read_csv(get_path.valid_matrix)
     columns = ["timestamp","video_id","watch_ratio"]
     user_seqs = small_martix.groupby("user_id")[columns].apply(lambda x : get_seqs(x,video_text)).to_dict()
-    json.dump(user_seqs,open(get_path.user_interact_prompt_path,"w+",encoding="utf-8"),indent=4)
+    json.dump(user_seqs,open(get_path.user_interact_prompt_path,"w+",encoding="utf-8"),indent=4,ensure_ascii=False)
 
 def add_id(x):
     prompt = "（视频id:" + str(x.index[0]) + ","
@@ -47,7 +47,7 @@ def add_id(x):
 def build_candidate_prompt():
     data = pd.read_csv(get_path.video_title_path)
     process_data = data.groupby("video_id")["text"].apply(add_id).to_dict()
-    json.dump(process_data,open(get_path.candidate_video_describe_path,"w+",encoding="utf-8"),indent=4)
+    json.dump(process_data,open(get_path.candidate_video_describe_path,"w+",encoding="utf-8"),indent=4,ensure_ascii=False)
 
 def get_video_prompt():
     return json.load(open(get_path.user_interact_prompt_path))

@@ -1,8 +1,3 @@
-{
-    "WideAndDeep": {
-        "precision": 0.7744528928981438,
-        "recall": 0.4805599871212329,
-        "accuracy": 0.6731226163446815,
-        "loss": 4.47629898889059
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:cf7b7bcb58abb08478e132ddedbb09ca5640e0559643b390c8d3724652d731cc
+size 183

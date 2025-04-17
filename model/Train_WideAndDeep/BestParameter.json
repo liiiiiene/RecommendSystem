@@ -1,13 +1,3 @@
-{
-    "WideAndDeep": {
-        "num_epochs": 100,
-        "lr": 0.001,
-        "batch_size": 2048,
-        "weight_decay": 0.1,
-        "num_hidden": 120,
-        "patience": 10,
-        "num_head": 6,
-        "num_layer": 4,
-        "dropout": 0.7
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:a97c039502e11fcf2ca6b44855d3c14bdba34145ee7bb536d9b3bc9a08ee74f4
+size 256

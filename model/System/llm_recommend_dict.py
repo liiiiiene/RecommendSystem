@@ -1,3 +1,4 @@
+import concurrent.futures
 from model.LLM_Rec.LLM_few_shot import LLM_FewShot
 from load_data.LLM_utils import get_video_prompt
 import pickle
@@ -6,8 +7,8 @@ from load_data import get_path
 from collections import defaultdict
 import concurrent
 from tqdm import tqdm
-
-prompt_prefix = """你是一个视频推荐系统。根据用户观看历史，预测用户点击新视频的概率。
+from threading import Lock
+prompt_prefix = """你是一个视频推荐系统。根据用户观看历史序列，预测用户点击新视频的概率。
 """
 prompt_suffix = """
 历史序列: {sequeence}
@@ -48,14 +49,13 @@ def get_llm_sequence_recommend():
     llm_recommend_dict = defaultdict(list)
     
     # 设置线程池最大工作线程数
-    max_workers = 10
+    max_workers = 15
     
     for u in tqdm(recommend_dict):
         if u not in prompt_user_dict.keys():
             continue
         sequence = prompt_user_dict[u]
         candidate_video = recommend_dict[u]
-        output = []
         
         # 准备参数列表
         tasks = [(llm, sequence, v, candidate_dict) for v in candidate_video]
@@ -63,14 +63,16 @@ def get_llm_sequence_recommend():
         # 使用多线程处理
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             results = list(executor.map(process_candidate, tasks))
-            
+        
         # 过滤掉None结果并排序
         output = [result for result in results if result is not None]
         output = [i[0] for i in sorted(output, key=lambda x:x[1], reverse=True)]
         output = output[:5] if len(output)>=5 else output
-        llm_recommend_dict[u].append(output)
-    
-    json.dump(llm_recommend_dict, open(get_path.llm_recommend_dict_path, "w+", encoding="utf-8"), indent=4)
+        llm_recommend_dict[u].extend(output)
+
+    with Lock():
+        json.dump(llm_recommend_dict, open(get_path.llm_recommend_dict_path, "w+", encoding="utf-8"), indent=4)
+
 
 if __name__=="__main__":
     get_llm_sequence_recommend()

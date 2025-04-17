@@ -1,8 +1,3 @@
-{
-    "FMcross": {
-        "precision": 0.44087038789025546,
-        "recall": 0.474059003051882,
-        "accuracy": 0.5260906757912746,
-        "loss": 6.6999499797821045
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:5450e9c0feea61535037537a263ba11172a298c792c7e55a7a21d77d4ab0aa8b
+size 188

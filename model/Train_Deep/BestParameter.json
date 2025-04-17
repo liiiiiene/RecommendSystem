@@ -1,13 +1,3 @@
-{
-    "transformer": {
-        "num_epochs": 100,
-        "lr": 0.01,
-        "batch_size": 10240,
-        "weight_decay": 0.1,
-        "num_hidden": 120,
-        "patience": 3,
-        "num_head": 6,
-        "num_layer": 4,
-        "dropout": 0.5
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:2e218840eb29dc38f95a87f6d3d738aaaa2974011149319c07238c52b38c4165
+size 255
