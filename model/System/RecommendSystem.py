@@ -131,7 +131,7 @@ def get_llm_sequence_recommend():
     llm_recommend_dict = defaultdict(list)
     
     # 设置线程池最大工作线程数
-    max_workers = 10  # 可以根据系统性能调整
+    max_workers = 15
     
     for u in tqdm(recommend_dict):
         if u not in prompt_user_dict.keys():
@@ -158,11 +158,12 @@ def get_llm_sequence_recommend():
 
 if __name__=="__main__":
     # 检测所有可用的CUDA设备
-    available_devices = [f"cuda:{i}" for i in range(torch.cuda.device_count())]
-    print(f"可用设备: {available_devices}")
+    # available_devices = [f"cuda:{i}" for i in range(torch.cuda.device_count())]
+    # print(f"可用设备: {available_devices}")
     
     # 使用所有可用设备
-    build_recommend_dict(available_devices)
+    device = "cuda:0"
+    build_recommend_dict(device)
     get_llm_sequence_recommend()
 
 
