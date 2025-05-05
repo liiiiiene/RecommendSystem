@@ -1,4 +1,5 @@
-from load_data import getOriginalData,SMALL_MATRIX
+from load_data.load_file import getOriginalData
+from load_data.get_path import SMALL_MATRIX
 from plot import plot_density,plot_bar
 import pandas as pd
 
@@ -27,6 +28,7 @@ class Interactive:
 
 if __name__ == "__main__":
     interactive = Interactive()
-    interactive.get_watch_ratio()
-    interactive.get_play_times()
+    # interactive.get_watch_ratio()
+    # interactive.get_play_times()
     interactive.get_play_datetime()
+    

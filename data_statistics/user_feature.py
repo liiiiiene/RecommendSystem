@@ -1,4 +1,5 @@
-from load_data import getOriginalData,USER_FEATURES
+from load_data.load_file import getOriginalData
+from load_data.get_path import USER_FEATURES
 from plot import plot_bar
 
 # 获取用户特征

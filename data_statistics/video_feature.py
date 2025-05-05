@@ -1,4 +1,5 @@
-from load_data import getOriginalData,ITEM_DAILY_FEATURES,ITEM_CATEGORIES,SMALL_MATRIX
+from load_data.load_file import getOriginalData
+from load_data.get_path import ITEM_DAILY_FEATURES,ITEM_CATEGORIES,SMALL_MATRIX
 from plot import plot_bar,plot_density
 from collections import defaultdict
 import pandas as pd
@@ -52,8 +53,9 @@ class VideoFeature:
         video_tag_dict = defaultdict(int)
         for tag_list in video_tag:
             for tag in tag_list:
-                video_tag_dict[tag] += 1
-        plot_bar(video_tag_dict.items(),"Video tag","Count","Video tag distribution",rotation=45,bottom_margin=0.2)
+                video_tag_dict[str(tag)] += 1
+        video_tag_list = sorted(video_tag_dict.items(),key=lambda x:x[1],reverse=True)
+        plot_bar(video_tag_list,"Video tag","Count","Video tag distribution",rotation=45,bottom_margin=0.2)
 
     def get_video_tag_count(self):
         video_tag = self.video_tag_df["feat"].apply(lambda x:str(len(self.__convert_to_list(x))))
@@ -62,8 +64,8 @@ class VideoFeature:
 
 if __name__ == "__main__":
     video_feature = VideoFeature()
-    video_feature.vedio_duration()
-    video_feature.video_upload_type()
+    # video_feature.vedio_duration()
+    # video_feature.video_upload_type()
     video_feature.get_video_tag()
-    video_feature.get_video_tag_count()
+    # video_feature.get_video_tag_count()
 

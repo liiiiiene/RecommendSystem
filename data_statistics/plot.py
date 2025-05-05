@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+plt.rcParams.update({'font.size':15})
 
 
 def plot_bar(data,x_label,y_label,title,rotation=None,bottom_margin=None):
