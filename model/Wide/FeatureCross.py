@@ -30,7 +30,6 @@ class FeatureCross(nn.Module):
         
         u_mask = (uid_feature != -1).type(torch.int)
         i_mask = (iid_feature != -1).type(torch.int)
-        
         uid_emb = self.user_embedding(uid_feature * u_mask) * torch.unsqueeze(u_mask, dim=2) * 0.5
         iid_emb = self.item_embedding(iid_feature * i_mask) * torch.unsqueeze(i_mask, dim=2) 
         gpt_emb = self.gpt_embedding_layer(iid_feature * i_mask) * torch.unsqueeze(i_mask, dim=2) 
@@ -38,7 +37,6 @@ class FeatureCross(nn.Module):
 
         all_feature = torch.cat((uid_emb, iid_emb), dim=1)
 
-        
         return all_feature
     
     def __MLP(self,dim):

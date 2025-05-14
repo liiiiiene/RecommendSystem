@@ -26,7 +26,7 @@ def get_seqs():
     sequence = []
     columns = ["timestamp","video_id","watch_ratio"]
     user_squence = valid_df.groupby("user_id")[columns].apply(lambda x: build_seqs(x,sequence)).to_dict()
-    json.dump(user_squence,open(get_path.uer_sequence_path,"w+",encoding="utf-8"),indent=4)
+    json.dump(user_squence,open(get_path.user_sequence_path,"w+",encoding="utf-8"),indent=4)
     np.save(get_path.sequence_item_ratio_path,np.array(sequence))
     items = set(valid_df["video_id"].values.tolist())
     with open(get_path.deployment,"r+",encoding="utf-8") as f:

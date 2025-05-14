@@ -68,3 +68,6 @@ def tensor_embedding():
 
 def get_emb_tensor():
     return torch.load(get_path.embedding_tensor)
+
+if __name__=="__main__":
+    get_feature()

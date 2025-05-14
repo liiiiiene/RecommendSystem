@@ -52,3 +52,5 @@ candidate_video_describe_path = "process_data/candidate_vedio_describe.json"
 llm_recommend_dict_path = "model/System/recommend_dict/llm_recommend_dict.json"
 
 explain_llm_recommend_dict_path = "model/System/recommend_dict/explain_llm_recommend_dict.json"
+
+sqlite_path = "./web/sql/sqlite"

@@ -47,14 +47,14 @@ def split_user_seqs(user_seqs,n):
     return result
 
 
-def build_recommend_dict(avaliable_device=None):
+def build_recommend_dict(avaliable_device=None,open_path = get_path.user_sequence_path,save_path = get_path.recommend_dict_path):
     mp.set_start_method('spawn', force=True)
     if avaliable_device is None:
         avaliable_device = [f"cuda:{i}" for i in range(torch.cuda.device_count())]
 
     num_gpu = len(avaliable_device)
 
-    user_seqs = json.load(open(get_path.user_sequence_path))
+    user_seqs = json.load(open(open_path))
 
     if len(user_seqs)==0:
         print("没有用户序列")
@@ -84,7 +84,7 @@ def build_recommend_dict(avaliable_device=None):
             recommend_dict[user] |= items
     
     # 保存结果
-    pickle.dump(recommend_dict, open(get_path.recommend_dict_path, "wb"))
+    pickle.dump(recommend_dict, open(save_path, "wb"))
     print(f"推荐表生成完成，共 {len(recommend_dict)} 个用户")
 
 if __name__=="__main__":

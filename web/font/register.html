@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+
+        }
+
+        .box {
+            margin: 100px auto;
+            padding: 20px;
+            height: 500px;
+            width: 500px;
+            border: 1px solid black;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        button {
+            margin: 0 50px;
+        }
+
+        .messages {
+            color: red;
+            font-size: 20px;
+        }
+
+        .username {
+            margin: 20px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h2>注册</h2>
+        <form action="/submitRegister" method="post">
+            <div class="username">
+                <span>用户名：</span>
+                <input type="text" class="name" name="username">
+            </div>
+            <div class="password">
+                <span>密码：</span>
+                <input type="password" class="ps" name="password">
+            </div>
+        </form>
+        <a href="/login">登录</a>
+        <div class="messages"></div>
+        <div class="btns">
+            <button class="ok" disabled>确定</button>
+            <button class="cancel">取消</button>
+        </div>
+    </div>
+
+    <script>
+        const uname = document.querySelector('.name')
+        const ps = document.querySelector('.ps')
+        const ok_btn = document.querySelector('.ok')
+        const cancel_btn = document.querySelector('.cancel')
+        const messages = document.querySelector('.messages')
+
+        // 检查输入框内容并更新按钮状态
+        function checkInputs() {
+            ok_btn.disabled = !(uname.value.trim() && ps.value.trim())
+        }
+        // 初始检查
+        checkInputs()
+        // 添加输入事件监听
+        uname.addEventListener('input', checkInputs)
+        ps.addEventListener('input', checkInputs)
+        // 取消按钮点击事件
+        cancel_btn.addEventListener('click', () => {
+            uname.value = ''
+            ps.value = ''
+            checkInputs()
+            messages.textContent = ''
+        })
+
+        ok_btn.addEventListener('click', (e) => {
+            e.preventDefault()
+            const n = uname.value.trim()
+            const p = ps.value.trim()
+
+            const form = document.querySelector('form')
+            const formData = new FormData(form)
+
+            fetch('/submitRegister', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    if (data === 'true') {
+                        window.location.href = '/main'
+                    } else if (data === 'false') {
+                        messages.textContent = '已注册'
+                    }
+                })
+                .catch(error => {
+                    console.error('提交出错:', error)
+                })
+        })
+    </script>
+</body>
+
+</html>

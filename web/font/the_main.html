@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>推荐页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-btn {
+            margin-left: 15px;
+            padding: 5px 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .box {
+            display: flex;
+            justify-content: center;
+            margin: 100px auto;
+            padding: 20px;
+            height: 920px;
+            width: 1400px;
+            /* background-color: pink; */
+            border: 1px solid black
+        }
+
+        .ForYou {
+            height: 920px;
+            width: 1200px;
+            /* background-color: green; */
+        }
+
+        .Rec {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 900px;
+            width: 1200px;
+            /* background-color: skyblue; */
+        }
+
+        .Rec li {
+            cursor: pointer;
+            height: 150px;
+            width: 1200px;
+            /* background-color: red; */
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <h1>推荐系统</h1>
+        <div class="user-info">
+            <span>欢迎，{{ username }}</span>
+            <a href="/logout" class="logout-btn">登出</a>
+        </div>
+    </header>
+    <div class="box">
+        <div class="ForYou">
+            <span>为你推荐</span>
+            <button id="refreshRecs" style="margin-left: 10px; padding: 5px 10px; cursor: pointer;">刷新推荐</button>
+            <ul class="Rec" action="\RecForYou">
+                <li>
+                    <div></div>
+                    <button class="ratio_1">看完了</button>
+                    <button class="ratio_2">没看完</button>
+                </li>
+                <li>
+                    <div></div>
+                    <button class="ratio_1">看完了</button>
+                    <button class="ratio_2">没看完</button>
+                </li>
+                <li>
+                    <div></div>
+                    <button class="ratio_1">看完了</button>
+                    <button class="ratio_2">没看完</button>
+                </li>
+                <li>
+                    <div></div>
+                    <button class="ratio_1">看完了</button>
+                    <button class="ratio_2">没看完</button>
+                </li>
+                <li>
+                    <div></div>
+                    <button class="ratio_1">看完了</button>
+                    <button class="ratio_2">没看完</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 定义一个函数来获取并显示推荐
+        function fetchAndDisplayRecommendations() {
+            fetch('/get_recommendations')
+                .then(response => response.json())
+                .then(data => {
+                    // 获取推荐列表容器
+                    const recList = document.querySelector('.Rec');
+                    // 清空现有内容
+                    recList.innerHTML = '';
+
+                    // 将对象转换为数组
+                    const recommendations = Object.entries(data);
+                    // 随机选择5个视频
+                    const selectedRecommendations = [];
+
+                    // 如果推荐数量大于5，随机选择5个
+                    if (recommendations.length > 5) {
+                        // 克隆数组，避免修改原数组
+                        const tempRecs = [...recommendations];
+                        // 随机选择5个视频
+                        for (let i = 0; i < 5; i++) {
+                            if (tempRecs.length > 0) {
+                                const randomIndex = Math.floor(Math.random() * tempRecs.length);
+                                selectedRecommendations.push(tempRecs[randomIndex]);
+                                // 移除已选视频
+                                tempRecs.splice(randomIndex, 1);
+                            }
+                        }
+                    } else {
+                        // 如果推荐数量小于等于5，使用所有推荐
+                        selectedRecommendations.push(...recommendations);
+                    }
+
+                    // 渲染随机选择的推荐内容
+                    selectedRecommendations.forEach(([key, value]) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <div>${value}</div>
+                            <button class="ratio_1" data-video-id="${key}">看完了</button>
+                            <button class="ratio_2" data-video-id="${key}">没看完</button>
+                        `;
+                        recList.appendChild(li);
+                    });
+
+                    // 添加按钮点击事件
+                    setupButtonListeners();
+                })
+                .catch(error => console.error('获取推荐失败:', error));
+        }
+
+        // 设置按钮点击事件监听器
+        function setupButtonListeners() {
+            // 为"看完了"按钮添加事件监听器
+            document.querySelectorAll('.ratio_1').forEach(button => {
+                // 先移除可能存在的旧监听器
+                button.removeEventListener('click', handleRatio1Click);
+                // 添加新的监听器
+                button.addEventListener('click', handleRatio1Click);
+            });
+
+            // 为"没看完"按钮添加事件监听器
+            document.querySelectorAll('.ratio_2').forEach(button => {
+                // 先移除可能存在的旧监听器
+                button.removeEventListener('click', handleRatio2Click);
+                // 添加新的监听器
+                button.addEventListener('click', handleRatio2Click);
+            });
+        }
+
+        // 处理"看完了"按钮点击
+        function handleRatio1Click() {
+            const videoId = this.getAttribute('data-video-id');
+            saveInteraction(videoId, 1);
+        }
+
+        // 处理"没看完"按钮点击
+        function handleRatio2Click() {
+            const videoId = this.getAttribute('data-video-id');
+            saveInteraction(videoId, 0);
+        }
+
+        // 保存交互数据
+        function saveInteraction(videoId, watchRatio) {
+            // 禁用按钮，防止重复点击
+            document.querySelectorAll(`button[data-video-id="${videoId}"]`).forEach(btn => {
+                btn.disabled = true;
+            });
+
+            fetch('/save_interaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    video_id: videoId,
+                    timestamp: Date.now() / 1000, // 当前时间戳（秒）
+                    watch_ratio: watchRatio
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        console.log('互动数据已保存');
+                        // 显示提示信息
+                        alert(watchRatio === 1 ? '已记录您看完了该视频' : '已记录您未看完该视频');
+
+                        // 再次启用按钮，允许用户更改他们的选择
+                        setTimeout(() => {
+                            document.querySelectorAll(`button[data-video-id="${videoId}"]`).forEach(btn => {
+                                btn.disabled = false;
+                            });
+                        }, 1000); // 1秒后重新启用按钮
+                    } else {
+                        console.error('保存互动数据失败:', data.message);
+                        // 保存失败时重新启用按钮
+                        document.querySelectorAll(`button[data-video-id="${videoId}"]`).forEach(btn => {
+                            btn.disabled = false;
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('发送互动数据时出错:', error);
+                    // 发生错误时重新启用按钮
+                    document.querySelectorAll(`button[data-video-id="${videoId}"]`).forEach(btn => {
+                        btn.disabled = false;
+                    });
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // 页面加载时获取推荐
+            fetchAndDisplayRecommendations();
+
+            // 点击刷新按钮时重新获取推荐
+            document.getElementById('refreshRecs').addEventListener('click', function () {
+                fetchAndDisplayRecommendations();
+            });
+        });
+
+    </script>
+</body>
+
+</html>

@@ -105,7 +105,7 @@ if __name__=="__main__":
     deploy_path = get_path.FM_ParametersDeploy_path
     label = "FMcross"
     parameter_deploy = get_FMparameters_deploy()
-    ParametersFind(label,parameter_deploy,train)
-    # ParametersTest(label,parameter_deploy,train)
+    # ParametersFind(label,parameter_deploy,train)
+    ParametersTest(label,parameter_deploy,train)
 
     

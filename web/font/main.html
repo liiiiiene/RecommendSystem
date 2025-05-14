@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>推荐页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-btn {
+            margin-left: 15px;
+            padding: 5px 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .box {
+            display: flex;
+            justify-content: center;
+            margin: 100px auto;
+            padding: 20px;
+            height: 920px;
+            width: 1400px;
+            /* background-color: pink; */
+            border: 1px solid black
+        }
+
+        .ForYou {
+            height: 920px;
+            width: 1200px;
+            /* background-color: green; */
+        }
+
+        .Rec {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 900px;
+            width: 1200px;
+            /* background-color: skyblue; */
+        }
+
+        .Rec li {
+            cursor: pointer;
+            height: 150px;
+            width: 1200px;
+            /* background-color: red; */
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <h1>推荐系统</h1>
+        <div class="user-info">
+            <span>欢迎，{{ username }}</span>
+            <a href="/logout" class="logout-btn">登出</a>
+        </div>
+    </header>
+    <div class="box">
+        <div class="ForYou">
+            <span>为你推荐</span>
+            <!-- <button id="refreshRecs" style="margin-left: 10px; padding: 5px 10px; cursor: pointer;">刷新推荐</button> -->
+            <ul class="Rec">
+                <li>
+                    <div></div>
+                    <button class="ratio_1">看完了</button>
+                    <button class="ratio_2">没看完</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function get_recommandation() {
+            fetch('/select_model')
+                .then(response => response.text())
+
+                .then(data => {
+                    if (data === "cold_start") {
+                        console.log("use cold_start");
+                        get_cold_rec()
+                    } else if (data === "rec_model") {
+                        console.log("use rec model");
+                    }
+                })
+                .catch(e => {
+                    console.error("选择模型错误", e);
+
+                })
+        }
+        function get_cold_rec() {
+            fetch('/cold_start')
+                .then(response => response.json())
+                .then(data => {
+                    // 获取随机视频内容
+                    const rec_list = Object.entries(data);
+                    const select_Rec_list = [];
+                    const temp_rec_list = [...rec_list];
+                    if (temp_rec_list.length > 5) {
+                        for (let i = 0; i < 5; i++) {
+                            indices = Math.floor(Math.random() * rec_list.length);
+                            select_Rec_list.push(temp_rec_list[indices]);
+                            temp_rec_list.splice(indices, 1);
+                        }
+                    } else {
+                        select_Rec_list.push(...temp_rec_list);
+                    }
+
+                    // 渲染视频内容
+                    const Rec_li = document.querySelector('.Rec');
+                    Rec_li.innerHTML = '';
+                    select_Rec_list.forEach(([key, value]) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<div>${value}</div>
+                        <button class="ratio_1" data-vedio_id="${key}">看完了</button>
+                        <button class="ratio_2" data-vedio_id="${key}">没看完</button>`;
+                        Rec_li.appendChild(li);
+                    })
+                    watchHandle()
+                })
+        }
+        function watchHandle() {
+            document.querySelectorAll('.ratio_1').forEach(btn => {
+                btn.addEventListener('click', ratio_1_btn);
+
+            })
+            document.querySelectorAll('.ratio_2').forEach(btn => {
+                btn.addEventListener('click', ratio_2_btn);
+            })
+        }
+
+        function ratio_1_btn() {
+            video_id = this.getAttribute('data-vedio_id');
+            console.log("看完了按钮", video_id);
+            save_interaction(video_id, 1);
+            const another_btn = this.parentElement.querySelector('.ratio_2');
+            if (another_btn) {
+                another_btn.disabled = true;
+            }
+            this.disabled = true;
+        }
+        function ratio_2_btn() {
+            video_id = this.getAttribute('data-vedio_id');
+            console.log("没看完按钮", video_id);
+            save_interaction(video_id, 0)
+            const another_btn = this.parentElement.querySelector('.ratio_1');
+            if (another_btn) {
+                another_btn.disabled = true;
+            }
+            this.disabled = true;
+        }
+
+        function save_interaction(video_id, ratio) {
+            fetch("/save_interaction", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    video_id: video_id,
+                    timestamp: Date.now() / 1000, // 当前时间戳（秒）
+                    watch_ratio: ratio
+                })
+            })
+                .then(response => {
+                    console.log(response);
+                    console.log(typeof response);
+                    return response.json()
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert("信息已记录");
+                    } else {
+                        alert(`记录失败, error: ${data.meg}`);
+                    }
+                })
+                .catch(e => {
+                    console.error("获取互动信息时出错");
+                })
+        }
+
+        get_recommandation()
+
+
+    </script>
+</body>
+
+</html>
