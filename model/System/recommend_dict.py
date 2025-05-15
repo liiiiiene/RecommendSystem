@@ -28,7 +28,8 @@ def build_recommend_dict_worker(worker_id, device, user_subset, result_queue,k=5
         recommend_item = system.predict(eval(u), history_seq, target_seqs, 3,k)
         if len(recommend_item) == 0:
             continue
-        recommend_dict[u] |= recommend_item
+        history_set = set(i.item() for i in seqs[:,:-2].reshape(-1))
+        recommend_dict[u] |= recommend_item - history_set
     
     result_queue.put(recommend_dict)
 
@@ -86,6 +87,7 @@ def build_recommend_dict(avaliable_device=None,open_path = get_path.user_sequenc
     # 保存结果
     pickle.dump(recommend_dict, open(save_path, "wb"))
     print(f"推荐表生成完成，共 {len(recommend_dict)} 个用户")
+    return recommend_dict
 
 if __name__=="__main__":
     build_recommend_dict()

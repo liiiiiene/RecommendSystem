@@ -53,4 +53,4 @@ def explain_llm(username):
 
 if __name__=="__main__":
     # get_rec_dict("admin")
-    explain_llm("admin")
+    get_rec_dict("user")

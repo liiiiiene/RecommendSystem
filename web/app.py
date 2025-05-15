@@ -90,7 +90,7 @@ def select_model():
     db_name = os.path.join(get_path.sqlite_folder_path,f"{username}.sqlite")
     conn = sqlite3.connect(db_name)
     interaction = pd.read_sql("SELECT * FROM InterAction",conn)
-    user_id = pd.read_sql("""SELECT index_id FROM UserInfo""", conn).loc[0].values
+    user_id = pd.read_sql("""SELECT index_id FROM UserInfo""", conn).loc[0].values.item()
     if len(interaction[interaction["watch_ratio"]==1]) >10:
         u_s = get_seq(username)
     else:

@@ -11,7 +11,7 @@ export PYTHONPATH=$PYTHONPATH:$(pwd)
 echo "正在训练fmcross"
 python model/Train_Wide/Train_Wide.py
 
-# echo "正在训练组合模型"
-# python model/concat/WideAndDeep.py
+echo "正在训练组合模型"
+python model/concat/WideAndDeep.py
 
 
