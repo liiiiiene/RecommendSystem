@@ -12,7 +12,7 @@ class RecommendSystem:
         mask = logits > value
         return seqs[mask]
 
-    def predict(self,uid,history_seqs,target_seqs,num_predict):
+    def predict(self,uid,history_seqs,target_seqs,num_predict,k=5):
         target_seqs = torch.LongTensor(target_seqs).to(self.device)
         history_seqs = torch.LongTensor(history_seqs).to(self.device)
         encoder_seqs = self.net.transformer.encoder(self.net.transformer.item_emb(history_seqs))
@@ -36,7 +36,11 @@ class RecommendSystem:
             transformer_ctr = self.net.transformer.forward4Rec(encoder_seqs[:,i+1:],pre_seqs[:,:i+2])
             Fm_ctr = self.net.fmcross(uid,pre_seqs[:,i+1])
             ctr_out = self.net.Logit(self.net.project((Fm_ctr + transformer_ctr).reshape(-1,1)).unsqueeze(dim=1)).squeeze(dim=1)
-            _,top5_indices = torch.topk(ctr_out,k=5)
+            if len(ctr_out) > k:
+                _,top5_indices = torch.topk(ctr_out,k=k)
+            else:
+                _,top5_indices = torch.topk(ctr_out,k=len(ctr_out))
+                
             recommend_item |= set(i.item() for i in pre_seqs[:,i+1][top5_indices])
         return recommend_item
 

@@ -9,7 +9,7 @@ import pickle
 import torch.multiprocessing as mp
 from model.System.RecommendSystem import RecommendSystem
 
-def build_recommend_dict_worker(worker_id, device, user_subset, result_queue):
+def build_recommend_dict_worker(worker_id, device, user_subset, result_queue,k=5):
     print(f"进程 {worker_id} 使用 {device} 处理 {len(user_subset)} 个用户")
     WideAndDeep_net = torch.load(get_path.WideAndDeep_net_path, map_location=torch.device(device), weights_only=False)
     WideAndDeep_net.to(device)
@@ -25,7 +25,7 @@ def build_recommend_dict_worker(worker_id, device, user_subset, result_queue):
         valid_seqs = seqs[seqs[:,-1]==1]
         history_seq = valid_seqs[:,:-2]
         target_seqs = valid_seqs[:,1:-1]
-        recommend_item = system.predict(eval(u), history_seq, target_seqs, 3)
+        recommend_item = system.predict(eval(u), history_seq, target_seqs, 3,k)
         if len(recommend_item) == 0:
             continue
         recommend_dict[u] |= recommend_item
@@ -47,7 +47,7 @@ def split_user_seqs(user_seqs,n):
     return result
 
 
-def build_recommend_dict(avaliable_device=None,open_path = get_path.user_sequence_path,save_path = get_path.recommend_dict_path):
+def build_recommend_dict(avaliable_device=None,open_path = get_path.user_sequence_path,save_path = get_path.recommend_dict_path,k=5):
     mp.set_start_method('spawn', force=True)
     if avaliable_device is None:
         avaliable_device = [f"cuda:{i}" for i in range(torch.cuda.device_count())]
@@ -69,7 +69,7 @@ def build_recommend_dict(avaliable_device=None,open_path = get_path.user_sequenc
     for i,(device,task) in enumerate(zip(avaliable_device,gpu_tasks)):
         p = mp.Process(
             target=build_recommend_dict_worker,
-            args=(i,device,task,result_quene)
+            args=(i,device,task,result_quene,k)
         )
         process.append(p)
         p.start()

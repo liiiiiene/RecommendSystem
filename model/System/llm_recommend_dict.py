@@ -17,7 +17,7 @@ prompt_suffix = """
 请根据上述历史序列，预测用户点击候选视频的概率。
 返回一个0到1之间的浮点数，只返回数字，不要有任何解释。
 """
-
+candidate_dict = json.load(open(get_path.candidate_video_describe_path))
 
 def get_response(llm,sequeence,candidate):
     for _ in range(10):
@@ -41,11 +41,10 @@ def process_candidate(args):
         return (v, response)
     return None
 
-def get_llm_sequence_recommend():
+
+def get_llm_sequence_recommend(prompt_user_dict = get_video_prompt(),open_path = get_path.recommend_dict_path,save_path = get_path.llm_recommend_dict_path):
     llm = LLM_FewShot(prompt_prefix,prompt_suffix,["sequeence","candidate"])
-    prompt_user_dict = get_video_prompt()
-    recommend_dict = pickle.load(open(get_path.recommend_dict_path,"rb"))
-    candidate_dict = json.load(open(get_path.candidate_video_describe_path))
+    recommend_dict = pickle.load(open(open_path,"rb"))
     llm_recommend_dict = defaultdict(list)
     
     # 设置线程池最大工作线程数
@@ -71,7 +70,8 @@ def get_llm_sequence_recommend():
         llm_recommend_dict[u].extend(output)
 
     with Lock():
-        json.dump(llm_recommend_dict, open(get_path.llm_recommend_dict_path, "w+", encoding="utf-8"), indent=4)
+        json.dump(llm_recommend_dict, open(save_path, "w+", encoding="utf-8"), indent=4)
+        return llm_recommend_dict
 
 
 if __name__=="__main__":

@@ -12,7 +12,7 @@ class ColdStartSystem:
         self.net = net
         self.net.device = device
 
-        db_name = os.path.join(get_path.sqlite_path,f"{user_name}.sqlite")
+        db_name = os.path.join(get_path.sqlite_folder_path,f"{user_name}.sqlite")
         conn = sqlite3.connect(db_name)
         user_id = pd.read_sql("""SELECT index_id FROM UserInfo""", conn).loc[0].values
         conn.close()

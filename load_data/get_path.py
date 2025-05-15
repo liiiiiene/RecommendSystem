@@ -53,4 +53,12 @@ llm_recommend_dict_path = "model/System/recommend_dict/llm_recommend_dict.json"
 
 explain_llm_recommend_dict_path = "model/System/recommend_dict/explain_llm_recommend_dict.json"
 
-sqlite_path = "./web/sql/sqlite"
+sqlite_folder_path = "./web/sql/sqlite"
+sqlite_user_sequence_folder_path = "./web/sql/seq_data/"
+
+
+cold_rec_folder_path = "./web/sql/cold_data"
+
+Rec_llm_folder_path = "./web/sql/llm_data"
+Rec_explain_llm_folder_path = "./web/sql/explain_llm"
+sqlite_interaction_pro_folder = "./web/sql/prompt"

@@ -4,17 +4,20 @@ import load_data.get_path as get_path
 import json
 import pandas as pd
 from flask import Flask,render_template,request,redirect,session,url_for
-import torch
-from model.cold_start.cold_start_model import ColdStartSystem
 from model.Wide.FeatureCross import FeatureCross
-
 from web.sql.process_sql import build_new_sqlite,login_sql
 from web.server.ColdStart import cold_start
-from web.server.GetSeqs import reaction_data
-
+from web.server.GetSeqs import reaction_data,get_seq,process_seq
+from model.concat.WideAndDeep import WideAndDeep
+from model.System.RecommendSystem import RecommendSystem
+from web.server.RecSystem import get_rec_dict,explain_llm
 
 # 指定模板目录为当前文件所在目录
-app = Flask(__name__,template_folder="E:/Graduation_Project/MyRecommendSystem/web/font")
+app = Flask(__name__,
+            template_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)),"font"),
+            static_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)),"font"),
+            static_url_path='/css'
+            )
 app.secret_key = "123"  # 设置session密钥，实际应用中应使用复杂的随机字符串
 
 
@@ -38,8 +41,25 @@ def login():
 
 @app.route('/logout')
 def logout():
-    session.pop("username",None)
+    if len(session)!=0 and session["username"] is not None:
+        session.pop("username",None)
+    if len(session)!=0 and (session['llm_dic'] is not None or session['explain_dic'] is not None):
+        session.pop('llm_dic',None)
+        session.pop('explain_dic',None)
     return redirect('/login')
+
+@app.route('/return_root')
+def return_root():
+    if len(session)!=0 and session["username"] is not None:
+        session.pop("username",None)
+    if len(session)!=0 and (session['llm_dic'] is not None or session['explain_dic'] is not None):
+        session.pop('llm_dic',None)
+        session.pop('explain_dic',None)
+    return redirect('/')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 @app.route('/submitRegister',methods=['POST'])
 def RegisterSubmit():
@@ -67,13 +87,23 @@ def LoginSubmit():
 @app.route('/select_model')
 def select_model():
     username = session["username"]
-    db_name = f"E:/Graduation_Project/MyRecommendSystem/web/sql/sqlite/{username}.sqlite"
+    db_name = os.path.join(get_path.sqlite_folder_path,f"{username}.sqlite")
     conn = sqlite3.connect(db_name)
     interaction = pd.read_sql("SELECT * FROM InterAction",conn)
+    user_id = pd.read_sql("""SELECT index_id FROM UserInfo""", conn).loc[0].values
+    if len(interaction[interaction["watch_ratio"]==1]) >10:
+        u_s = get_seq(username)
+    else:
+        u_s = None
     conn.close()
-    if len(interaction[interaction["watch_ratio"]==1]) <=10:
+    if u_s is None or len(u_s[user_id]) <= 10:
         return "cold_start"
     else:
+        process_seq(username)
+        llm_dic = get_rec_dict(username)
+        explain_dic = explain_llm(username)
+        session['llm_dic'] = json.dumps(llm_dic)
+        session['explain_dic'] = json.dumps(explain_dic)
         return "rec_model"
     
 @app.route('/cold_start')
@@ -81,6 +111,14 @@ def cold_start_rec():
     username = session['username']
     recommand_dict = cold_start(username)
     return json.dumps(recommand_dict)
+
+@app.route('/rec_model')
+def rec_model():
+    return session['llm_dic']
+
+@app.route('/explain_llm')
+def get_explain():
+    return session['explain_dic']
 
 @app.route('/save_interaction',methods=["POST"])
 def save_interaction():
@@ -98,8 +136,6 @@ def save_interaction():
         return json.dumps({"status":"success"})
     except:
         return json.dumps({"status":"error","meg":"存入数据库错误"})
-
-
 
 
 if __name__ == "__main__":

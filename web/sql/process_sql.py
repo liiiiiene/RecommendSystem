@@ -9,7 +9,7 @@ def get_random(index):
     return index[ran]
 
 def build_new_sqlite(user_name,password):
-    db_name = f"E:/Graduation_Project/MyRecommendSystem/web/sql/sqlite/{user_name}.sqlite"
+    db_name = os.path.join(get_path.sqlite_folder_path,f"{user_name}.sqlite")
     if os.path.exists(db_name):
         return False
     conn = sqlite3.connect(db_name)
@@ -44,11 +44,11 @@ def build_new_sqlite(user_name,password):
 
     conn.commit()
     conn.close()
-
+    print("注册成功")
     return True
 
 def login_sql(user_name,password):
-    db_name = f"E:/Graduation_Project/MyRecommendSystem/web/sql/sqlite/{user_name}.sqlite"
+    db_name = os.path.join(get_path.sqlite_folder_path,f"{user_name}.sqlite")
     if not os.path.exists(db_name):
         return False
     conn = sqlite3.connect(db_name)

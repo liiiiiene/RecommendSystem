@@ -45,16 +45,15 @@ def process_user(args):
     
     return u, user_explain_dict
 
-def user_explain_llm_recommend_dict():
-    llm_recommend_dict = json.load(open(get_path.llm_recommend_dict_path, "r+", encoding="utf-8"))
-    prompt_user_seqs = LLM_utils.get_video_prompt()
-    video_describe_dict = LLM_utils.get_candidate_prompt()
+video_describe_dict = json.load(open(get_path.candidate_video_describe_path))
+
+def user_explain_llm_recommend_dict(prompt_user_seqs = LLM_utils.get_video_prompt(),open_path = get_path.llm_recommend_dict_path,save_path = get_path.explain_llm_recommend_dict_path):
+    llm_recommend_dict = json.load(open(open_path, "r+", encoding="utf-8"))
     llm = LLM_explain(prompt_prefix, prompt_suffix, ["sequeence", "recommend_video"])
-    
     max_workers = 15  # 用户级别的最大线程数
     explain_recommend_dict = defaultdict(dict)
     
-    tasks = [(u, llm_recommend_dict[u][0], prompt_user_seqs[u], video_describe_dict, llm) 
+    tasks = [(u, llm_recommend_dict[u], prompt_user_seqs[u], video_describe_dict, llm) 
             for u in llm_recommend_dict]
     
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -64,7 +63,8 @@ def user_explain_llm_recommend_dict():
             explain_recommend_dict[u].update(user_explain_dict)
     
     with Lock():
-        json.dump(explain_recommend_dict, open(get_path.explain_llm_recommend_dict_path, "w+", encoding="utf-8"),indent=4,ensure_ascii=False)
+        json.dump(explain_recommend_dict, open(save_path, "w+", encoding="utf-8"),indent=4,ensure_ascii=False)
+        return explain_recommend_dict
 
 
 if __name__=="__main__":

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于系统</title>
+    <!-- <link rel="stylesheet" href="./css/about.css"> -->
+    <style>
+        @keyframes an-left {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0%);
+                opacity: 1;
+            }
+        }
+
+        @keyframes an-right {
+            from {
+                transform: translate(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translate(0%);
+                opacity: 1;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font: 20px 宋体;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f9e0e7 0%, #d4e5ff 100%);
+        }
+
+        .box {
+            width: 1200px;
+            height: 700px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            overflow: hidden;
+            padding: 25px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .card a {
+            color: #5698d4;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .card a:hover {
+            color: #ff6b88;
+            text-decoration: underline;
+        }
+
+        .explain {
+            width: 1000px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px auto;
+        }
+
+        li {
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        li:nth-child(2n) {
+            border-left: 4px solid #add8e6;
+            animation: an-left 1s;
+        }
+
+        li:nth-child(2n-1) {
+            border-left: 4px solid #ffb6c1;
+            animation: an-right 1s;
+        }
+
+        li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        .Toroot {
+            text-decoration: none;
+            margin-left: 15px;
+            padding: 8px 20px;
+            background: linear-gradient(to right, #add8e6, #5698d4);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(86, 152, 212, 0.3);
+        }
+
+        .Toroot:hover {
+            background: linear-gradient(to right, #ffb6c1, #ff6b88);
+            box-shadow: 0 5px 15px rgba(255, 107, 136, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .title {
+            font-size: 26px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #333;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="/return_root" class="Toroot">返回首页</a>
+        <div class="title">关于推荐系统</div>
+        <div style="width: 100px;"></div> <!-- 用于平衡布局 -->
+    </header>
+    <div class="box">
+        <div class="card">
+            这是一个基于快手公开数据集<a href="https://kuairec.com/" target="_blank">KuaiRec</a>的推荐系统，只针对论文内的推荐算法进行应用实现。该系统实现了以下功能：
+            <ul class="explain">
+                <li>提供了用户登录与注册功能。由于平台的保密政策，该数据集所提供的用户特征等隐藏了，所以新用户注册时会从原有用户特征中随机取出某个用户特征作为此用户的初始特征。并以此用户的用户名新建一个数据库，用来储存此用户的用户名、密码、用户特征以及用户的互动内容。如果多次注册同一个用户名，会有"已注册"提示。在用户登录时，需要此用户已经注册且密码正确，否则会有"用户名或密码错误"提示
+                </li>
+                <li>由于此数据集没有视频内容，只有视频标题内容，所以本推荐系统只提供视频标题作为推荐内容。该系统通过"看过了"和"没看过"按钮记录用户的观看有效率，即"看过了"按钮观看有效率为1，"没看过"按钮观看率为0。
+                </li>
+                <li>当用户刚刚注册，没有互动数据时，本系统提供冷启动模型。冷启动模型是基于论文的因子分解机特征交叉模型进行推荐，把此用户的特征与所有视频的特征进行交互，选取模型输出的观看有效率值较高的若干视频并加入若干流行度较高的视频组成冷启动的推荐列表。流行度是通过原始数据集的"small_martix.csv"文件内的用户与视频的观看率"watch_ratio"统计观看次数。
+                </li>
+                <li>当用户积累了一定的互动数据后，会使用论文内的组合模型进行推荐。此推荐不仅会调用深度学习部分进行候选视频的召回，还会调用大语言模型对候选视频进行精排序并推荐解释。推荐系统提供"推荐解释"按钮查看大语言模型生成的推荐解释。
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>
