@@ -31,16 +31,16 @@ class VideoFeature:
 
         duration_degree = duration.apply(self.__duration_degree)
         duration_degree = sorted(duration_degree.value_counts().items(),key=lambda x:x[1],reverse=True)
-        plot_bar(duration_degree,"Video duration(minutes)","Count","Video duration distribution")
+        plot_bar(duration_degree,"视频时长类型","计数（个）","视频时长类型数量分布")
 
         duration_density = duration[duration < 150000]
-        plot_density(duration_density,"Video duration(milliseconds)","Density","Video duration density")
+        plot_density(duration_density,"视频时长（毫秒）","概率密度","视频时长的概率密度分布")
         
 
     def video_upload_type(self):
         upload_type = self.video_feature_df["upload_type"].value_counts()
         upload_type = sorted(upload_type.items(),key=lambda x:x[1],reverse=True)
-        plot_bar(upload_type,"Video upload type","Count","Video upload type distribution",rotation=45,bottom_margin=0.2)
+        plot_bar(upload_type,"上传视频的类型","计数（个）","上传视频类型个数分布",rotation=45,bottom_margin=0.2)
 
     def __convert_to_list(self,data):
         try:
@@ -55,17 +55,17 @@ class VideoFeature:
             for tag in tag_list:
                 video_tag_dict[str(tag)] += 1
         video_tag_list = sorted(video_tag_dict.items(),key=lambda x:x[1],reverse=True)
-        plot_bar(video_tag_list,"Video tag","Count","Video tag distribution",rotation=45,bottom_margin=0.2)
+        plot_bar(video_tag_list,"视频标签","计数（个）","视频标签数量分布",rotation=45,bottom_margin=0.2)
 
     def get_video_tag_count(self):
         video_tag = self.video_tag_df["feat"].apply(lambda x:str(len(self.__convert_to_list(x))))
         video_tag = sorted(video_tag.value_counts().items(),key=lambda x:x[1],reverse=True)
-        plot_bar(video_tag,"Video tag count","Count","Video tag count distribution")
+        plot_bar(video_tag,"视频标签的数量（个）","视频数量计数（个）","标签数量的视频计数分布")
 
 if __name__ == "__main__":
     video_feature = VideoFeature()
     # video_feature.vedio_duration()
     # video_feature.video_upload_type()
-    video_feature.get_video_tag()
+    # video_feature.get_video_tag()
     # video_feature.get_video_tag_count()
 
