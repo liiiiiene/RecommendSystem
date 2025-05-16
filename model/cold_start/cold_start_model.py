@@ -29,7 +29,7 @@ class ColdStartSystem:
 
     def predict(self):
         ret = self.net(self.user_id,self.item_id)
-        value = (torch.max(ret)/2).item()
+        value = 0.5
         indices = torch.where(ret>value)[0].to("cpu").tolist()
         if(len(indices)<100):
             length = 100 - len(indices)

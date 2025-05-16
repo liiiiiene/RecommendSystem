@@ -37,24 +37,29 @@ def process_seq(username):
     user_seq_path = os.path.join(get_path.sqlite_user_sequence_folder_path,f"{username}.json")
     save_pickle_path = os.path.join(get_path.sqlite_user_sequence_folder_path,f"{username}.pkl")
     rec_dict = build_recommend_dict(None,user_seq_path,save_pickle_path,k=10)
+    db_name = os.path.join(get_path.sqlite_folder_path,f"{username}.sqlite")
+    conn = sqlite3.connect(db_name)
+    history_set = set(pd.read_sql("SELECT video_id FROM InterAction",conn).iloc[:,0].values.tolist())
     for user_id in rec_dict.keys():
         video_id_set = rec_dict[user_id]
+        video_id_set -= history_set
         if len(video_id_set) < 5:
-            cold_rec_list = list(cold_start(username).keys())
-            for item in video_id_set:
-                if item in cold_rec_list:
-                    cold_rec_list.remove(video_id_set)
+            pre_cold_rec_list = list(set(cold_start(username).keys()) - video_id_set)
+            cold_rec_list = list(set(pre_cold_rec_list) - history_set)
             times = 5 - len(video_id_set)
-            for i in range(times):
-                indices = int(random.random()*len(cold_rec_list))
-                video_id_set.add(cold_rec_list[indices])
+            if len(cold_rec_list)>times:
+                item = random.sample(cold_rec_list,times)
+            else:
+                item = random.sample(pre_cold_rec_list,times)
+            video_id_set.update(item)
+
             recommend_dict = defaultdict(set)
             recommend_dict[user_id] |= video_id_set
             pickle.dump(recommend_dict, open(save_pickle_path, "wb"))
     
 
 if __name__=="__main__":
-    process_seq("user")
+    process_seq("admin")
     import pickle
     rec_dict = pickle.load(open(os.path.join(get_path.sqlite_user_sequence_folder_path,f"admin.pkl"),"rb"))
     print(rec_dict)

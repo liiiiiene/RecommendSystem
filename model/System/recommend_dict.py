@@ -28,8 +28,8 @@ def build_recommend_dict_worker(worker_id, device, user_subset, result_queue,k=5
         recommend_item = system.predict(eval(u), history_seq, target_seqs, 3,k)
         if len(recommend_item) == 0:
             continue
-        history_set = set(i.item() for i in seqs[:,:-2].reshape(-1))
-        recommend_dict[u] |= recommend_item - history_set
+        # history_set = set(i.item() for i in seqs[:,:-1].reshape(-1))
+        recommend_dict[u] |= recommend_item
     
     result_queue.put(recommend_dict)
 

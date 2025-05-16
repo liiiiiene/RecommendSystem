@@ -27,34 +27,34 @@ def root():
 
 @app.route("/register")
 def register():
+    if 'username' in session:
+        return redirect('/main')
     return render_template("register.html")
 
 @app.route('/main')
 def main():
     if 'username' not in session:
-        return redirect(url_for('login'))
+        return redirect('/login')
     return render_template("main.html", username=session['username'])
 
 @app.route('/login')
 def login():
+    if 'username' in session:
+        return redirect('/main')
     return render_template("login.html")
 
 @app.route('/logout')
 def logout():
-    if len(session)!=0 and session["username"] is not None:
+    if 'username' in session:
         session.pop("username",None)
-    if len(session)!=0 and (session['llm_dic'] is not None or session['explain_dic'] is not None):
+    if 'llm_dic' in session:
         session.pop('llm_dic',None)
+    if 'explain_dic' in session:
         session.pop('explain_dic',None)
     return redirect('/login')
 
 @app.route('/return_root')
 def return_root():
-    if len(session)!=0 and session["username"] is not None:
-        session.pop("username",None)
-    if len(session)!=0 and (session['llm_dic'] is not None or session['explain_dic'] is not None):
-        session.pop('llm_dic',None)
-        session.pop('explain_dic',None)
     return redirect('/')
 
 @app.route('/about')
@@ -140,4 +140,3 @@ def save_interaction():
 
 if __name__ == "__main__":
     app.run(debug=True)
-    # other_recommandation("admin")
