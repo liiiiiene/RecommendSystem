@@ -19,6 +19,7 @@ class FeatureCross(nn.Module):
             freeze=False  # True=保持固定，False=允许微调
         )
         self.dense = self.__MLP(num_hiddens*(self.user_feature.shape[1] + self.item_feature.shape[1]))
+        self.project_out = nn.Sequential(nn.Linear(2,1),nn.Sigmoid())
 
     def __concat_feature(self, u, i):
         if isinstance(i,torch.Tensor) and i.device!="cpu":
@@ -55,6 +56,7 @@ class FeatureCross(nn.Module):
         # FM交叉项
         square_of_sum = torch.sum(mask_emb,dim=1)**2
         sum_of_square = torch.sum(mask_emb**2,dim=1)
-        output = torch.sum(square_of_sum - sum_of_square,dim=1)*0.5
-        out = self.dense(mask_emb.reshape(output.shape[0],-1)).reshape(-1)
-        return torch.sigmoid(0.5*output + 0.5*out)
+        output = (torch.sum(square_of_sum - sum_of_square,dim=1)*0.5).reshape(-1,1)
+        out = self.dense(mask_emb.reshape(output.shape[0],-1)).reshape(-1,1)
+        result = self.project_out(torch.cat([out,output],dim=1))
+        return result.reshape(-1)
